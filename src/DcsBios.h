@@ -97,12 +97,15 @@ do not come with their own build system, we are just putting everything into the
 #ifdef DCSBIOS_DEFAULT_SERIAL
 	namespace DcsBios {
 		ProtocolParser parser;
+		unsigned long cnt = 0;
+
 		void setup() {
 			Serial.begin(250000);
 		}
 		void loop() {
 			while (Serial.available()) {
 				parser.processChar(Serial.read());
+				cnt++;
 			}
 			PollingInput::pollInputs();
 			ExportStreamListener::loopAll();			
@@ -114,6 +117,11 @@ do not come with their own build system, we are just putting everything into the
 		}
 		void resetAllStates() {
 			PollingInput::resetAllStates();
+		}
+		unsigned long getCnt() {
+			unsigned long ret = cnt;
+			cnt = 0;
+			return ret;
 		}
 	}
 #endif
